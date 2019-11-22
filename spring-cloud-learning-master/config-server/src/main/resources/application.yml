@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/olivertanzy/spring-cloud-learning
+          search-paths: config-coderqian
+          # 如果代码仓库是公开的，则不需要设置用户名和密码
+          username: olivertanzy
+          password: tanjun1994215512
+server:
+  port: 1201
