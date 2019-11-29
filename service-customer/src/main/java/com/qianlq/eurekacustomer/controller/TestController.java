@@ -133,18 +133,8 @@ public class TestController {
     }
 
     @RequestMapping(value = "/testValue1", method = RequestMethod.GET)
-    public String testRedis() throws IOException {
+    public String testRedis() {
         ValueOperations<String, Object> operations = redisTemplate.opsForValue();
-        //HashOperations operations = redisTemplate.opsForHash();
-/*        String key = "city_" + 33;
-        int hashKey = 1;
-        boolean hasKey = redisTemplate.hasKey(key);// 判断是否有
-        if (hasKey) {
-            Map<Integer, String> map1 = new HashMap<>();
-            operations.get(key, hashKey); // 查询
-            // operations.getOperations().delete(key);//删除
-            return "succese";
-        }*/
         // 修改map在插入就可以
         operations.set("name","bob");
         Object a = operations.get("name");

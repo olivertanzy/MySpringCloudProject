@@ -26,18 +26,18 @@ public class SenderService {
      * @param p the p
      * @return the response entity
      */
-    public void broadcast(String p) {
+/*    public void broadcast(String p) {
         CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
         System.out.println("发送消息");
         rabbitTemplate.convertAndSend("FANOUT_EXCHANGE", "", p, correlationData);
     }
 
-    /**
+    *//**
      * 测试Direct模式.
      *
      * @param p the p
      * @return the response entity
-     */
+     *//*
     public void direct(String p) {
         CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
         rabbitTemplate.convertAndSend("DIRECT_EXCHANGE", "DIRECT_ROUTING_KEY", p, correlationData);
@@ -46,6 +46,37 @@ public class SenderService {
     public void testOder(Test p) {
         CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
         rabbitTemplate.convertAndSend("testOrder", "oder", p, correlationData);
+    }*/
+
+    /**
+     * 测试exchange的Fanout模式
+     * @param p
+     */
+    public void tesFanout(Test p) {
+        CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
+        rabbitTemplate.convertAndSend("fanoutExchange", "", p,correlationData);
+        CorrelationData correlationDatas = new CorrelationData(UUID.randomUUID().toString());
+        rabbitTemplate.convertAndSend("fanoutExchange", "routingKeyFanout", p,correlationDatas);
     }
+    /**
+     * 测试exchange的Direct模式
+     * @param p
+     */
+    public void tesDirect(Test p) {
+        CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
+        rabbitTemplate.convertAndSend("exchangeDirect", "routingKeyDirect", p,correlationData);
+    }
+
+    /**
+     * 测试exchange的topic模式
+     * @param p
+     */
+    public void tesTopic(Test p) {
+        CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
+        rabbitTemplate.convertAndSend("topicExchange", "user.info.name", p,correlationData);
+        CorrelationData correlationDatas = new CorrelationData(UUID.randomUUID().toString());
+        rabbitTemplate.convertAndSend("topicExchange", "user.info.age", p,correlationDatas);
+    }
+
 
 }

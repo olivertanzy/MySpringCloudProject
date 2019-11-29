@@ -54,14 +54,14 @@ public class TestController {
 
     @Autowired
     private SenderService senderService;
-    @ApiOperation(value = "测试消息驱动", notes = "测试消息驱动")
+/*    @ApiOperation(value = "测试消息驱动", notes = "测试消息驱动")
     @RequestMapping(value = "/stream", method = RequestMethod.GET)
     public void testStream() {
         // 测试广播模式
         senderService.broadcast("同学们集合啦！");
         // 测试Direct模式
         senderService.direct("定点消息");
-    }
+    }*/
 
     @ApiOperation(value = "测试服务间调用", notes = "测试服务间调用")
     @RequestMapping(value = "/test", method = RequestMethod.GET)
@@ -69,13 +69,32 @@ public class TestController {
         return customerService.testCustomer(text);
     }
 
-    @RequestMapping(value = "/testOrder", method = RequestMethod.POST)
-    public String testOrder(@Param("id") String id){
+    @RequestMapping(value = "/testFinout", method = RequestMethod.POST)
+    public String testFinout(@Param("id") String id){
         Test t = new Test();
-        t.setAge("20");
+        t.setAge(id);
         t.setAddress("重庆市渝中区");
-        t.setName("Oliver");
-        senderService.testOder(t);
+        t.setName("测试Finout模式");
+        senderService.tesFanout(t);
+        return "下单成功";
+    }
+    @RequestMapping(value = "/testDirect", method = RequestMethod.POST)
+    public String testDirect(@Param("id") String id){
+        Test t = new Test();
+        t.setAge(id);
+        t.setAddress("重庆市渝中区");
+        t.setName("测试testDirect模式");
+        senderService.tesDirect(t);
+        return "下单成功";
+    }
+
+    @RequestMapping(value = "/testTopic", method = RequestMethod.POST)
+    public String testTopic(@Param("id") String id){
+        Test t = new Test();
+        t.setAge(id);
+        t.setAddress("重庆市渝中区");
+        t.setName("测试testTopic模式");
+        senderService.tesTopic(t);
         return "下单成功";
     }
 }

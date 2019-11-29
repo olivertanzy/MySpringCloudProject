@@ -50,109 +50,67 @@ public class RabbitConfig {
         return rabbitTemplate;
     }
 
-    /* ----------------------------------------------------------------------------Direct exchange test--------------------------------------------------------------------------- */
 
-    /**
-     * 声明Direct交换机 支持持久化.
-     *
-     * @return the exchange
-     */
-    @Bean("directExchange")
-    public Exchange directExchange() {
-        return ExchangeBuilder.directExchange("DIRECT_EXCHANGE").durable(true).build();
-    }
 
-    @Bean("testOrder")
-    public Exchange testOderExchange() {
-        return ExchangeBuilder.directExchange("testOrder").durable(true).build();
-    }
-    /**
-     * 声明一个队列 支持持久化.
-     *
-     * @return the queue
-     */
-    @Bean("directQueue")
-    public Queue directQueue() {
-        return QueueBuilder.durable("DIRECT_QUEUE").build();
-    }
-
-    @Bean("oder")
-    public Queue oderQueue() {
-        return QueueBuilder.durable("oder").build();
-    }
-    /**
-     * 通过绑定键 将指定队列绑定到一个指定的交换机 .
-     *
-     * @param queue    the queue
-     * @param exchange the exchange
-     * @return the binding
-     */
-    @Bean
-    public Binding testOrderBinding(@Qualifier("oder") Queue queue,
-                                 @Qualifier("testOrder") Exchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("oder").noargs();
-    }
-
-    @Bean
-    public Binding directBinding(@Qualifier("directQueue") Queue queue,
-                                 @Qualifier("directExchange") Exchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("DIRECT_ROUTING_KEY").noargs();
-    }
-    /* ----------------------------------------------------------------------------Fanout exchange test--------------------------------------------------------------------------- */
-
-    /**
-     * 声明 fanout 交换机.
-     *
-     * @return the exchange
-     */
     @Bean("fanoutExchange")
-    public FanoutExchange fanoutExchange() {
-        return (FanoutExchange) ExchangeBuilder.fanoutExchange("FANOUT_EXCHANGE").durable(true).build();
+    public FanoutExchange exchangeFanout() {
+        return (FanoutExchange) ExchangeBuilder.fanoutExchange("fanoutExchange").durable(true).build();
     }
-
-    /**
-     * Fanout queue A.
-     *
-     * @return the queue
-     */
+    @Bean("fanoutExchangeQueue")
+    public Queue fanoutExchangeQueue() {
+        return QueueBuilder.durable("fanout_exchange").build();
+    }
+    @Bean
+    public Binding fanoutExchangeBinding(@Qualifier("fanoutExchangeQueue") Queue queue,
+                                    @Qualifier("fanoutExchange") FanoutExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange);
+    }
     @Bean("fanoutQueueA")
     public Queue fanoutQueueA() {
-        return QueueBuilder.durable("FANOUT_QUEUE_A").build();
+        return QueueBuilder.durable("fanoutQueueA").build();
     }
-
-    /**
-     * Fanout queue B .
-     *
-     * @return the queue
-     */
     @Bean("fanoutQueueB")
     public Queue fanoutQueueB() {
-        return QueueBuilder.durable("FANOUT_QUEUE_B").build();
+        return QueueBuilder.durable("fanoutQueueB").build();
     }
-
-    /**
-     * 绑定队列A 到Fanout 交换机.
-     *
-     * @param queue          the queue
-     * @param fanoutExchange the fanout exchange
-     * @return the binding
-     */
+    @Bean
+    public Binding bindingB(@Qualifier("fanoutQueueB") Queue queue,
+                            @Qualifier("fanoutExchange") FanoutExchange fanoutExchange) {
+        return BindingBuilder.bind(queue).to(fanoutExchange);
+    }
     @Bean
     public Binding bindingA(@Qualifier("fanoutQueueA") Queue queue,
                             @Qualifier("fanoutExchange") FanoutExchange fanoutExchange) {
         return BindingBuilder.bind(queue).to(fanoutExchange);
     }
 
-    /**
-     * 绑定队列B 到Fanout 交换机.
-     *
-     * @param queue          the queue
-     * @param fanoutExchange the fanout exchange
-     * @return the binding
-     */
+
+    @Bean("exchangeDirect")
+    public DirectExchange exchangeDirect() {
+        return (DirectExchange) ExchangeBuilder.directExchange("exchangeDirect").durable(true).build();
+    }
+    @Bean("directExchangeQueue")
+    public Queue directExchangeQueue() {
+        return QueueBuilder.durable("directExchangeQueue").build();
+    }
     @Bean
-    public Binding bindingB(@Qualifier("fanoutQueueB") Queue queue,
-                            @Qualifier("fanoutExchange") FanoutExchange fanoutExchange) {
-        return BindingBuilder.bind(queue).to(fanoutExchange);
+    public Binding directExchangeBinding(@Qualifier("directExchangeQueue") Queue queue,
+                                         @Qualifier("exchangeDirect") DirectExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with("routingKeyDirect");
+    }
+
+
+    @Bean("topicExchange")
+    public TopicExchange topicExchange() {
+        return (TopicExchange) ExchangeBuilder.topicExchange("topicExchange").durable(true).build();
+    }
+    @Bean("topicExchangeQueue")
+    public Queue topicExchangeQueue() {
+        return QueueBuilder.durable("topicExchangeQueue").build();
+    }
+    @Bean
+    public Binding topicBinding(@Qualifier("topicExchangeQueue") Queue queue,
+                                @Qualifier("topicExchange") TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with("user.info.*");
     }
 }
